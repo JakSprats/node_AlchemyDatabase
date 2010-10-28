@@ -8,4 +8,8 @@ To install you must first install
 
 Then type "npm install Redisql"
 
-To test, type "node examples/redisql_examples.js"
+
+To test, 
+1.) make sure ./redisql-server is running 
+2.) THIS TEST WILL CALL "FLUSHDB" on database 0 of redisql -> you will lose data
+3.) type "node examples/redisql_examples.js"
