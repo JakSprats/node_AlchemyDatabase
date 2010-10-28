@@ -1,0 +1,11 @@
+
+This is the Node.js (http://nodejs.org/) client for Redisql (http://code.google.com/p/redisql/)
+
+To install you must first install
+1.) node
+2.) npm (http://github.com/isaacs/npm)
+3.) Redisql
+
+Then type "npm install Redisql"
+
+To test, type "node examples/redisql_examples.js"
