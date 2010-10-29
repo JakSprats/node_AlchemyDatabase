@@ -1,0 +1,13 @@
+{   "name" : "redisql",
+    "version" : "0.0.1",
+    "description" : "Redisql client library",
+    "author": "First Last <email@sub.domain>",
+    "main": "./index.js",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/JakSprats/node_Redisql.git"
+    },
+    "dependencies": {
+        "redis": ">=0.3.5"
+    }
+}
