@@ -1,4 +1,4 @@
-var redisql = require("./redisql");
+var redisql = require("redisql");
 var client  = redisql.createClient();
 
 function last_command(err, res) {
@@ -24,7 +24,7 @@ function insert_worker(redisql, client) {
     client.insert("worker", "(9,22,1,31111.99,ken)", redisql.print);
     client.insert_return_size("worker", "(10,33,4,111111.99,seth)", redisql.print);
 }
- 
+
 function scanselect_worker(redisql, client) {
     client.scanselect("*", "worker", redisql.print);
     client.scanselect("*", "worker", "name=bill", redisql.print);
@@ -35,13 +35,13 @@ function update_worker(redisql, client) {
     client.update("worker", "name=JIM", "id = 1", redisql.print);
     client.select("*", "worker", "id = 1", redisql.print);
 }
- 
+
 function delete_worker(redisql, client) {
     client.select("*", "worker", "id = 2", redisql.print);
     client.delete("worker", "id = 2", redisql.print);
     client.select("*", "worker", "id = 2", redisql.print);
 }
- 
+
 function desc_worker(redisql, client) {
     client.desc("worker", redisql.print);
 }
@@ -75,14 +75,18 @@ function create_table_from_redis_object_example(redisql, client) {
     client.dump("zset_example_table", redisql.print);
 }
 
-function create_table_as_example(redisql, client) {
+function create_table_as_example(redisql, client, callback) {
     client.zadd("zset_example", 3.3, "bob", redisql.print);
     client.zadd("zset_example", 1.1, "ted", redisql.print);
     client.zadd("zset_example", 4.4, "ken", redisql.print);
     client.zadd("zset_example", 2.2, "mac", redisql.print);
     client.create_table_as("zset_beginning",
                            "ZREVRANGE", "zset_example", "0 1", redisql.print);
-    client.dump("zset_beginning", redisql.print);
+    client.dump("zset_beginning", redisql.print, function (err, res) {
+        if (typeof callback === "function") {
+            callback(err, res);
+        }
+    });
 }
 
 client.flushdb(redisql.print);
@@ -95,9 +99,10 @@ desc_worker(redisql, client);
 dump_worker(redisql, client);
 istore_worker_name_list(redisql, client);
 create_table_from_redis_object_example(redisql, client);
-create_table_as_example(redisql, client);
+create_table_as_example(redisql, client, function (err, res) {
+    console.log("End of example, sending QUIT command");
+    client.quit();
+});
 
 //drop_index_worker(redisql, client);
 //drop_table_worker(redisql, client);
-
-client.ping(last_command); // final command to exit cleanly

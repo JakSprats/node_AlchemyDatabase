@@ -1,4 +1,4 @@
-var redisql = require("./redisql");
+var redisql = require("redisql");
 var client  = redisql.createClient();
 var init    = true;
 var verbose = false;
