@@ -98,13 +98,15 @@ proto["SELECT"] = function () {
     var command = "SELECT";
     var args    = to_array(arguments);
     var mod_args;
-    if (args.length != 1) { // rewrite Redisql SELECT * FROM tbl WHERE id = 4
+    if (args.length > 2) { // rewrite Redisql SELECT * FROM tbl WHERE id = 4
         check_argc(command, args, 3);
         mod_args = args[0] + " FROM "  + args[1] + " WHERE " + args[2];
+        rsql_send_command(args, command, this, mod_args.split(' '), dbg);
     } else {                // redis SELECT DB
-        mod_args = arguments;
+        mod_args    = new Array(1);
+        mod_args[0] = args[0];
+        rsql_send_command(args, command, this, mod_args, dbg);
     }
-    rsql_send_command(args, command, this, mod_args.split(' '), dbg);
 };
 proto["select"] = proto["SELECT"];
 

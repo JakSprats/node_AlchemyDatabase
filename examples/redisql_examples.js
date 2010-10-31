@@ -362,6 +362,8 @@ function store_test(redisql, client) {
     jstore_worker_location_table(redisql, client);
 }
 
+
+client.select(15, redisql.print); /* for tests */
 client.flushdb(redisql.print);
 works(redisql, client);
 
