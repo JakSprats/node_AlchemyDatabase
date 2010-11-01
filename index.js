@@ -14,7 +14,8 @@ function to_array(args) { // helper borrowed from node_redis
 }
 
 function check_argc(command, args, argc) {
-    if (argc != args.length - 1) { // dont count the callback
+    var len = args.length - 1; // dont count the callback
+    if (argc != len) {
         throw new Error("cmd: " + command + " argc: " + argc + " not: " + len);
     }
 }
@@ -186,8 +187,14 @@ proto["update"] = proto["UPDATE"];
 proto["DUMP_TO_MYSQL"] = function () {
     var command  = "DUMP";
     var args = to_array(arguments);
-    check_argc("DUMP_TO_MYSQL", args, 1);
-    var mod_args = args[0] + " TO MYSQL";
+    var mod_args;
+    if (args.length > 1) {
+        check_argc("DUMP_TO_MYSQL", args, 2);
+        mod_args = args[0] + " TO MYSQL " + args[1];
+    } else {
+        check_argc("DUMP_TO_MYSQL", args, 1);
+        mod_args = args[0] + " TO MYSQL";
+    }
     rsql_send_command(args, command, this, mod_args.split(' '), dbg);
 };
 proto["dump_to_mysql"] = proto["DUMP_TO_MYSQL"];
