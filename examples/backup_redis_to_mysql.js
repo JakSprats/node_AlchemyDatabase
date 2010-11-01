@@ -13,7 +13,8 @@ var client  = redisql.createClient();
 // USAGE FREQUENCY: daily
 //
 // REQUIREMENTS
-//  1.) create database "backupdb"
+//  PACKAGES: http://github.com/felixge/node-mysql (npm install mysql)
+//  MYSQL: 1.) create database "backupdb"
 
 var currentTime = new Date()
 var month       = currentTime.getMonth() + 1
@@ -35,7 +36,6 @@ client.keys("*", function (err, keys) {
       //console.log(key + " is type " + keytype);
       if (keytype != "index" && keytype != "string") {
         var backup_table = "backup_" + key;
-        console.log("BACKUP: " + key + " TO REDISQL TABLE: " + backup_table);
 
         client.drop_table(backup_table, redisql.print);
         client.create_table_from_redis_object(backup_table,
@@ -53,11 +53,13 @@ client.keys("*", function (err, keys) {
           });
         });
         client.drop_table(backup_table, redisql.print);
+        console.log("Backed up: " + key +
+                    " in Mysql table name: " + mysql_backup_table);
       }
     });
   });
 });
 
-// cleanup
+// cleanup TODO
 //mclient.end();
 //client.quit();
