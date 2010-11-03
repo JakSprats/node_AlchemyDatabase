@@ -30,7 +30,7 @@ function rsql_send_command(args, command, obj, sargs, dbg) {
 }
 
 // new commands that we'll be adding that require no modifications
-var commands = ["CHANGEDB", "DUMP", "DESC", "NORM", "DENORM"];
+var commands = ["CHANGEDB", "DUMP", "DESC", "NORM", "DENORM", "LUA"];
 
 // merge into RedisClient prototype (both upper & lower case)
 commands.forEach(function (command) {
