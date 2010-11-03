@@ -1,9 +1,7 @@
-var Gently  = require('gently');
 var Client  = require('mysql').Client;
 var redisql = require("redisql");
 
 var mclient = new Client();
-var gently  = new Gently();
 var client  = redisql.createClient();
 
 // PURPOSE:
@@ -31,7 +29,7 @@ mclient.database = 'backupdb';
 mclient.connect();
 
 client.keys("*", function (err, keys) {
-  keys.forEach(function (key) {
+  keys.forEach(function (key, pos) {
     client.type(key, function (err, keytype) {
       //console.log(key + " is type " + keytype);
       if (keytype != "index" && keytype != "string") {
@@ -47,9 +45,7 @@ client.keys("*", function (err, keys) {
                             function (err, mlines) { 
           mlines.forEach(function (mline) {
             var ml = String(mline);
-            mclient.query(ml, gently.expect( function selectCb(err, rs, fs) {
-                if (err) console.log("mysql error:" + err);
-            }));
+            var q  = mclient.query(ml);
           });
         });
         client.drop_table(backup_table, redisql.print);
@@ -60,6 +56,7 @@ client.keys("*", function (err, keys) {
   });
 });
 
-// cleanup TODO
-//mclient.end();
-//client.quit();
+setTimeout(function () {
+   client.quit();
+   mclient.end();
+}, 2000);
