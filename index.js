@@ -44,8 +44,11 @@ proto["CREATE_TABLE"] = function () {
     var command  = "CREATE";
     var args     = to_array(arguments);
     check_argc(command, args, 2);
-    var mod_args = "TABLE " + args[0] + " (" + args[1] + ")";
-    rsql_send_command(args, command, this, mod_args.split(' '), dbg);
+    var margs = new Array();
+    margs.push("TABLE");
+    margs.push(args[0]);
+    margs.push("(" + args[1] + ")");
+    rsql_send_command(args, command, this, margs, dbg);
 };
 proto["create_table"] = proto["CREATE_TABLE"];
 
@@ -53,18 +56,23 @@ proto["CREATE_TABLE_FROM_REDIS_OBJECT"] = function () {
     var command  = "CREATE";
     var args     = to_array(arguments);
     check_argc("CREATE_TABLE_FROM_REDIS_OBJECT", args, 2);
-    var mod_args = "TABLE " + args[0] + " AS DUMP " + args[1];
-    rsql_send_command(args, command, this, mod_args.split(' '), dbg);
+    var margs = new Array();
+    margs.push("TABLE");
+    margs.push(args[0]);
+    margs.push("AS DUMP " + args[1]);
+    rsql_send_command(args, command, this, margs, dbg);
 };
 proto["create_table_from_redis_object"] = proto["CREATE_TABLE_FROM_REDIS_OBJECT"];
 
 proto["CREATE_TABLE_AS"] = function () {
     var command  = "CREATE";
     var args     = to_array(arguments);
-    check_argc("CREATE_TABLE_AS", args, 4);
-    var mod_args = "TABLE " + args[0] + " AS " +
-                    args[1] + " " + args[2] + " " + args[3];
-    rsql_send_command(args, command, this, mod_args.split(' '), dbg);
+    check_argc("CREATE_TABLE_AS", args, 2);
+    var margs = new Array();
+    margs.push("TABLE");
+    margs.push(args[0]);
+    margs.push("AS " + args[1]);
+    rsql_send_command(args, command, this, margs, dbg);
 };
 proto["create_table_as"] = proto["CREATE_TABLE_AS"];
 
@@ -101,8 +109,13 @@ proto["SELECT"] = function () {
     var mod_args;
     if (args.length > 2) { // rewrite Redisql SELECT * FROM tbl WHERE id = 4
         check_argc(command, args, 3);
-        mod_args = args[0] + " FROM "  + args[1] + " WHERE " + args[2];
-        rsql_send_command(args, command, this, mod_args.split(' '), dbg);
+        var margs = new Array();
+        margs.push(args[0]);
+        margs.push("FROM");
+        margs.push(args[1]);
+        margs.push("WHERE");
+        margs.push(args[2]);
+        rsql_send_command(args, command, this, margs, dbg);
     } else {                // redis SELECT DB
         mod_args    = new Array(1);
         mod_args[0] = args[0];
@@ -115,23 +128,30 @@ proto["SELECT_STORE"] = function () {
     var command  = "SELECT";
     var args     = to_array(arguments);
     check_argc("SELECT_STORE", args, 5);
-    var mod_args = args[0] + " FROM "  + args[1] + " WHERE " + args[2] +
-                   " STORE " + args[3] + " " + args[4];
-    rsql_send_command(args, command, this, mod_args.split(' '), dbg);
+    var margs = new Array();
+    margs.push(args[0]);
+    margs.push("FROM");
+    margs.push(args[1]);
+    margs.push("WHERE");
+    margs.push(args[2] + " STORE " + args[3] + " " + args[4]);
+    rsql_send_command(args, command, this, margs, dbg);
 };
 proto["select_store"] = proto["SELECT_STORE"];
 
 proto["SCANSELECT"] = function () {
     var command  = "SCANSELECT";
     var args     = to_array(arguments);
-    var mod_args = args[0] + " FROM "  + args[1];;
+    var margs = new Array();
+    margs.push(args[0]);
+    margs.push("FROM");
+    margs.push(args[1]);
     if (args.length > 3) {
-        check_argc(command, args, 3);
-        mod_args += " WHERE " + args[2];
+        margs.push("WHERE");
+        margs.push(args[2]);
     } else {
         check_argc(command, args, 2);
     }
-    rsql_send_command(args, command, this, mod_args.split(' '), dbg);
+    rsql_send_command(args, command, this, margs, dbg);
 };
 proto["scanselect"] = proto["SCANSELECT"];
 
@@ -163,8 +183,12 @@ proto["DELETE"] = function () {
     var command  = "DELETE";
     var args     = to_array(arguments);
     check_argc(command, args, 2);
-    var mod_args = "FROM " + args[0] + " WHERE "  + args[1];
-    rsql_send_command(args, command, this, mod_args.split(' '), dbg);
+    var margs = new Array();
+    margs.push("FROM");
+    margs.push(args[0]);
+    margs.push("WHERE");
+    margs.push(args[1]);
+    rsql_send_command(args, command, this, margs, dbg);
 };
 proto["delete"] = proto["DELETE"];
 
@@ -172,14 +196,12 @@ proto["UPDATE"] = function () {
     var command = "UPDATE";
     var args     = to_array(arguments);
     check_argc(command, args, 3);
-    var mod_args = args[0] + " SET"
-    var sargs    = mod_args.split(' ');;
-    sargs.push(args[1]); // push val_list at end as single argument
+    var sargs    = new Array();
+    sargs.push(args[0]);
+    sargs.push("SET");
+    sargs.push(args[1]);
     sargs.push("WHERE");
-    var wargs = args[2].split(' ');
-    for (var i = 0; i < wargs.length; i++) {
-        sargs.push(wargs[i]);
-    };
+    sargs.push(args[2]);
     rsql_send_command(args, command, this, sargs, dbg);
 };
 proto["update"] = proto["UPDATE"];

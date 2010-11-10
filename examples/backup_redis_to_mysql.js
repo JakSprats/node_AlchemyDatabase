@@ -59,4 +59,4 @@ client.keys("*", function (err, keys) {
 setTimeout(function () {
    client.quit();
    mclient.end();
-}, 2000);
+}, 100);

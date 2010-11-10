@@ -314,8 +314,8 @@ function create_table_as_example(redisql, client, callback) {
     client.zadd("zset_example", 4.4, "ken", redisql.print);
     client.zadd("zset_example", 2.2, "mac", redisql.print);
     client.create_table_as("zset_beginning",
-                           "ZREVRANGE", "zset_example", "0 1", redisql.print);
-    client.dump("zset_beginning", redisql.print, function (err, res) {
+                           "ZREVRANGE zset_example 0 1", redisql.print);
+    client.dump("zset_beginning", function (err, res) {
         if (typeof callback === "function") {
             callback(err, res);
         }
@@ -366,7 +366,6 @@ function store_test(redisql, client) {
 client.select(15, redisql.print); /* for tests */
 client.flushdb(redisql.print);
 works(redisql, client);
-
 store_test(redisql, client);
 
 //full_worker_test(redisql, client);
